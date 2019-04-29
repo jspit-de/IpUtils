@@ -41,6 +41,25 @@ Supported Output Formats:
 
 With "+" the Suffix will add
 
+### Range and Range-Intersect
+
+```php
+$range = IpUtils::create("192.168.115.110/24")
+  ->range(); 
+var_dump($range);  
+//array(2) { [0]=> string(13) "192.168.115.0" [1]=> string(15) "192.168.115.255" }
+```
+
+```php
+$ip1 = "192.168.115.110/24"; 
+$ip2 = "192.168.115.65/26"; 
+$range = IpUtils::create($ip1)
+  ->rangeIntersect($ip2);
+
+var_dump($range); 
+//array(2) { [0]=> string(14) "192.168.115.64" [1]=> string(15) "192.168.115.127" }
+```
+
 ## Class-Info
 
 | Info | Value |
@@ -101,6 +120,10 @@ With "+" the Suffix will add
 |  const COMP = &quot;COMP&quot;; //Compressed ::567:.. | &#039;COMP&#039; |  Compressed ::567:..  |
 |  const FULL = &quot;FULL&quot;; //output 0000:0000:0567:... | &#039;FULL&#039; |  output 0000:0000:0567:...  |
 |  const SUFFIX = &quot;+&quot;; //output with suffix | &#039;+&#039; |  output with suffix  |
+
+### Demo and Test
+
+http://jspit.de/check/phpcheck.class.iputils.php
 
 ### Requirements
 
