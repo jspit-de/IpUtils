@@ -2,9 +2,9 @@
 /**
 .---------------------------------------------------------------------------.
 |  Software: class IpUtils : Utility Functions for IPv4/Ipv6                |
-|   Version: 1.0                                                            |
-|      Date: 2019-04-26                                                     |
-|       PHP: <= 5.6                                                         |
+|   Version: 1.1                                                            |
+|      Date: 2020-01-05                                                     |
+|       PHP: >= 5.6                                                         |
 | ------------------------------------------------------------------------- |
 | Copyright © 2019, Peter Junk (alias jspit). All Rights Reserved.          |
 ' ------------------------------------------------------------------------- '
@@ -59,13 +59,37 @@ class IpUtils
   /**
    * Create Object
    * @param string       $ipInput
-   * @return object IpUtils;
+   * @return object IpUtils or false with warning if error
    */
   public static function create($ipInput)
   {
-    return new static($ipInput);
+    try{
+      $ipUtil = new static($ipInput);
+    }
+    catch (Exception $e) {
+      trigger_error(
+        'Error Method '.__METHOD__
+          .', Message: '.$e->getMessage()
+          .' stack trace'.$e->getTraceAsString(),
+        E_USER_WARNING
+      );
+      $ipUtil = false;
+    }
+    return $ipUtil;
   }
 
+  /**
+   * Create Object
+   * @param string       $ipInput
+   * @return object IpUtils; false if error
+   */
+  public static function createFromBinString($binString)
+  {
+    $ip = IpUtils::formatBinIp($binString);
+    if($ip === false) return false;
+    return new static($ip);
+  }
+  
   /**
    * setSuffix
    * @param int $suffix
