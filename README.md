@@ -66,18 +66,19 @@ var_dump($range);
 | :--- | :---- |
 | Declaration | class IpUtils |
 | Datei | IpUtils.php |
-| Date/Time modify File | 2019-04-26 13:25:48 |
+| Date/Time modify File | 2020-02-08 17:33:16 |
 | File-Size | 15 KByte |
-| MD5 File | a23ad83f3a7a431101fe6cde13717a30 |
-| Version | 1.0 |
-| Date | 2019-04-26 |
+| MD5 File | 4de5010b2df649408ca29fe66cbb768e |
+| Version | 1.1 |
+| Date | 2020-01-05 |
 
 ## Public Methods
 
 | Methods and Parameter | Description/Comments |
 | :-------------------- | :------------------- |
 | public function __construct($ipInput) | @param mixed $ipInput  |
-| public static function create($ipInput) | Create Object<br>@param string $ipInput<br>@return object IpUtils; |
+| public static function create($ipInput) | Create Object<br>@param string $ipInput<br>@return object IpUtils or false with warning if error |
+| public static function createFromBinString($binString) | Create Object<br>@param string $ipInput<br>@return object IpUtils; false if error |
 | public function setSuffix($suffix) | setSuffix<br>@param int $suffix<br>@return $this or false if error |
 | public function isIp4() | return true if valid Ip V4<br>@return bool; |
 | public function isIp6() | return true if valid Ip V6<br>@return bool; |
