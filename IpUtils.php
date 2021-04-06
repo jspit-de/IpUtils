@@ -3,7 +3,7 @@
 .---------------------------------------------------------------------------.
 |  Software: class IpUtils : Utility Functions for IPv4/Ipv6                |
 |   Version: 1.2                                                            |
-|      Date: 2021-04-05                                                     |
+|      Date: 2021-04-06                                                     |
 |       PHP: >= 7.0                                                         |
 | ------------------------------------------------------------------------- |
 | Copyright © 2019..2021, Peter Junk (alias jspit). All Rights Reserved.    |
