@@ -3,7 +3,7 @@
 .---------------------------------------------------------------------------.
 |  Software: class IpUtils : Utility Functions for IPv4/Ipv6                |
 |   Version: 1.2                                                            |
-|      Date: 2021-04-06                                                     |
+|      Date: 2021-04-05                                                     |
 |       PHP: >= 7.0                                                         |
 | ------------------------------------------------------------------------- |
 | Copyright © 2019..2021, Peter Junk (alias jspit). All Rights Reserved.    |
@@ -159,8 +159,8 @@ class IpUtils
   }
 
   /**
-   * return true if $ip is a valid GateWay
-   * @param $ip string GatewayIp
+   * return true if $gateWayIp may use or false
+   * @param mixed $gateWayIp
    * @return bool;
    */
   public function checkGateway($ip)
@@ -205,6 +205,7 @@ class IpUtils
     return is_int($this->suffix);
   }
   
+
   /**
    * get Hosts number 
    * @return float number of hosts or false if ip invalid
@@ -342,7 +343,7 @@ class IpUtils
    * empty array if not intersect or false if Error
    * @param mixed $ip
    * @param string  $format (null,'dec','raw','full')
-   * @return mixed array [IpFrom, IpTo], bool
+   * @return mixed array [IpFrom, IpTo], bool false if error
    */
   public function rangeIntersect($ip, $format = null)
   {
