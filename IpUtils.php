@@ -2,11 +2,11 @@
 /**
 .---------------------------------------------------------------------------.
 |  Software: class IpUtils : Utility Functions for IPv4/Ipv6                |
-|   Version: 1.1                                                            |
-|      Date: 2020-01-05                                                     |
-|       PHP: >= 5.6                                                         |
+|   Version: 1.2                                                            |
+|      Date: 2021-04-06                                                     |
+|       PHP: >= 7.0                                                         |
 | ------------------------------------------------------------------------- |
-| Copyright © 2019, Peter Junk (alias jspit). All Rights Reserved.          |
+| Copyright © 2019..2021, Peter Junk (alias jspit). All Rights Reserved.    |
 ' ------------------------------------------------------------------------- '
 */
 
@@ -104,6 +104,23 @@ class IpUtils
   }
 
   /**
+   * setSuffixFromNetMask
+   * @param int $suffix
+   * @return $this or false if error
+   * @throws InvalidArgumentException if $netmask is invalid 
+   */
+  public function setSuffixFromNetMask($netMask)
+  {
+    $suffix = self::suffixFromNetMask($netMask);
+    if($suffix === false){
+      $msg = "Invalid Net Mask '$netMask'";
+      throw new \InvalidArgumentException($msg);
+    }
+    $this->suffix = $suffix;
+    return $this;
+  }
+ 
+  /**
    * return true if valid Ip V4
    * @return bool;
    */
@@ -129,6 +146,28 @@ class IpUtils
   {
     return $this->isIp4() OR $this->isIp6();
   }
+
+  /**
+   * return true Ip is V4 or V6 and may use as Netmask
+   * @return bool;
+   */
+  public function isNetmask()
+  {
+    if(!$this->isIp()) return false;
+    $binNetMask = $this->format(self::BIN);
+    return (bool)preg_match('~^1*0*$~',$binNetMask);
+  }
+
+  /**
+   * return true if $ip is a valid GateWay
+   * @param $ip string GatewayIp
+   * @return bool;
+   */
+  public function checkGateway($ip)
+  {
+    return $this->rangeIntersect($ip) === [$ip,$ip];
+  }
+
   
   /**
    * Format Object
@@ -156,6 +195,15 @@ class IpUtils
       ? $this->suffix
       : false;
   }
+
+  /**
+   * return true if suffix set
+   * @return bool true or false
+   */
+  public function hasSuffix()
+  {
+    return is_int($this->suffix);
+  }
   
   /**
    * get Hosts number 
@@ -175,7 +223,7 @@ class IpUtils
   /**
    * get Net Mask 
    * @param string $format
-   * @return string netMask
+   * @return string netMask or false if error
    */
   public function netMask($format = null)
   {
@@ -194,6 +242,24 @@ class IpUtils
     $range = $this->range($format);
     return is_array($range) ? $range[0] : false; 
   }
+
+  /**
+   * get Default gateway Address
+   * @param string $format
+   * @return string gateway address Or bool false if error
+   */
+  public function defaultGateway($format = null)
+  {
+    $binRange = $this->binRange();
+    if($binRange === false) return false;
+    //default Gateway = netAdr + 1
+    $binDefGateway = self::binStrAddInt($binRange[0], 1);
+    return $binDefGateway < $binRange[1] 
+      ? self::formatBinIp($binDefGateway,$format)
+      : false
+    ;
+  }
+
 
   /**
    * get Broadcast Address 
@@ -315,6 +381,21 @@ class IpUtils
   public function __toString()
   {
     return (string)$this->format();
+  }
+
+ /**
+  * magic method für debug (var_dump)
+  */
+  public function __debugInfo() {
+    $binIp = is_string($this->binIp) 
+      ? '\\x'.implode('\\x',str_split(bin2hex($this->binIp),2))
+      : 'null'
+    ;
+    return [
+      'ip' => $this->ip,
+      'suffix' => $this->suffix,
+      'binIp' => $binIp,
+    ];
   }
 
   /**
@@ -590,5 +671,20 @@ class IpUtils
     return $overflow ? false : $binStr;
   }
   
+  /**
+   * setSuffixFromNetMask
+   * @param String $netMask how '255.255.255.0'
+   * @return int suffix (24 for '255.255.255.0') or bool false if error
+   */
+  public static function suffixFromNetMask($netMask)
+  {
+    $netMaskObj = self::create($netMask);
+    if(!$netMaskObj OR !$netMaskObj->isNetmask()) {
+      return false;
+    }
+    $binNetMask = $netMaskObj->format('BIN');
+    $suffix = strlen($binNetMask) - substr_count($binNetMask,'0');
+    return $suffix;
+  }
 
 }
